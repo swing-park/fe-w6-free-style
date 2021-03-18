@@ -1,6 +1,11 @@
 import 'regenerator-runtime/runtime';
-import { _ } from "./util"
+import { _ } from "./util";
+import CodeRunner from "./codeRunner";
 
 const init = async () => {
-    console.log("hi")
-}; init();
+    const codeRunner = new CodeRunner(_.$("#codeMirror"));
+    codeRunner.insertCodeMirror();
+
+    _.on(_.$(".runButton"), "click", codeRunner.init.bind(codeRunner))
+};
+init();

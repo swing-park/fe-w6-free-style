@@ -1,0 +1,76 @@
+.codeRunner {
+  align-items: center;
+  width: 35%;
+  height: 500px;
+  padding: 0px 20px;
+  background-color: #eee;
+}
+
+.codeRunner--header {
+  padding: 10px 0px;
+
+  .logo {
+    margin-right: 10px;
+
+    img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  .headerText {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .textDecoration {
+    text-decoration: line-through;
+    font-style: italic;
+    color: #3f87a6;
+  }
+}
+
+.inputContainer {
+  cursor: text;
+  display: flex;
+  border: 1px solid #3f87a6;
+  border-left: 7px solid #3f87a6;
+  height: 60%;
+  margin-bottom: 10px;
+}
+
+.outputContainer {
+  display: flex;
+  height: 20%;
+  margin-bottom: 10px;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  width: 15%;
+  margin-right: 7px;
+
+  button {
+    cursor: pointer;
+    background-color: #fff;
+    border: 2px solid #222;
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 10px;
+
+    &:hover {
+      color: #fff;
+      background-color: #222;
+    }
+  }
+}
+
+.console {
+  overflow: scroll;
+  background-color: #fff;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #eaf2f4;
+  box-shadow: 2px 2px 5px -2px rgb(0 0 0 / 10%);
+}

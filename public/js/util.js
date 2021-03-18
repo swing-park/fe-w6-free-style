@@ -3,7 +3,9 @@ const _ = {
     $All: (selector, base = document) => base.querySelectorAll(selector),
     addClass: (className, target) => target.classList.add(className),
     removeClass: (className, target) => target.classList.remove(className),
-    on: (el, event, fn) => el.addEventListener(event, fn)
+    on: (el, event, fn) => el.addEventListener(event, fn),
+    match: (el, regExp) => el.match(regExp),
+    replace: (el, regExp, replace) => el.replace(regExp, replace)
 };
 
 const delay = (fn, ms) => {
