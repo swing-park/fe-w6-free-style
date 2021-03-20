@@ -7,6 +7,7 @@ import "../../node_modules/codemirror/theme/xq-light.css"
 export default class CodeRunner {
     constructor(selector) {
         this.selector = selector;
+        this.returnCode = [];
         this.code;
     }
 
@@ -20,22 +21,25 @@ export default class CodeRunner {
     }
 
     async init() {
-        const code = await this.getCode(_.$All(".CodeMirror-line"));
-        console.log(code)
-        const log = await this.extractConsoleLog(code);
-        console.log(log)
-        const bracketItems = await this.extractLogInnerItems(log);
-        console.log(bracketItems)
-        await this.addInnerHtmlCode(bracketItems);
-        console.log(this.code)
-        this.runCode(this.code);
+        const code = this.getCode(_.$All(".CodeMirror-line"));
+        const log = this.extractConsoleLog(code);
+        const bracketItems = this.extractLogInnerItems(log);
+        const returnItems = this.addReturnCode(bracketItems)
+        const returnCode = this.getReturnCode(returnItems);
+        this.addInnerHtmlCode(returnCode);
+        this.runCode(this.code)
+    }
+
+    eventHandler() {
+        _.on(_.$(".runButton"), "click", this.init.bind(this))
+        _.on(_.$(".resetButton"), "click", this.reset.bind(this))
     }
 
     getCode(lines) {
         const code = [];
         lines.forEach(v => {
             const ascCode = v.innerText.charCodeAt();
-            ascCode !== 8203 ? code.push(v.innerText + "\n") : null
+            ascCode === 8203 ? null : code.push(v.innerText + "\n")
         });
         this.code = code.join("");
         return code
@@ -43,32 +47,45 @@ export default class CodeRunner {
 
     extractConsoleLog(code) {
         const consoleLog = [];
-        code.forEach((v) => { v.includes("console.log") ? consoleLog.push(v) : null })
+        code.forEach(v => { !v.includes("console.log") ? this.returnCode.push(v) : consoleLog.push(v) })
         return consoleLog
     }
 
     extractLogInnerItems(log) {
-        let bracketItem = [];
-        const bracketInnerItem = [];
         const matchRegExp = /\(.*\)/gi;
         const removeBracketRegExp = /[\(\)]/gi;
 
-        log.forEach((v) => bracketItem.push(_.match(v, matchRegExp)));
-        bracketItem = bracketItem.join().split(",");
-
-        bracketItem.forEach((v) => bracketInnerItem.push(_.replace(v, removeBracketRegExp, "")))
+        const bracketItem = log.map(v => _.match(v, matchRegExp)).join().split(",");
+        const bracketInnerItem = bracketItem.map(v => _.replace(v, removeBracketRegExp, ""));
         return bracketInnerItem
     }
 
+    addReturnCode(items) {
+        return this.returnCode.join("") + `return [${items}]`;
+    }
+
+    getReturnCode(returnCode) {
+        return eval(`(function(){${returnCode}})();`);
+    }
+
     addInnerHtmlCode(items) {
-        this.code += `document.querySelector('.console').innerHTML = "";\n`
+        this.code += `document.querySelector(".console").innerHTML = "";\n`
         items.forEach(item => {
-            //item이 위의 것을 참조하지 못함.
-            this.code += `document.querySelector('.console').innerHTML += '<div>> ${typeof item} ${item}</div>';\n`
+            this.code += `document.querySelector(".console").innerHTML += '<div>> ${typeof item} ${item}</div>';\n`
         })
     }
 
     runCode(code) {
-        eval(code);
+        eval(code)
+    }
+
+    reset() {
+        console.log("reset")
     }
 }
+
+/*현재 버그
+
+- console.log(a,b)할 시 줄 나뉨
+- 반복문 같은거에 반응이 한번밖에 안됨
+*/
