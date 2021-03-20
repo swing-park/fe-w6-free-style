@@ -68,9 +68,15 @@
 
 .console {
   overflow: scroll;
+  font-family: "Nanum Gothic Coding", monospace;
+  font-size: 14px;
   background-color: #fff;
   width: 100%;
   padding: 10px;
   border: 1px solid #eaf2f4;
   box-shadow: 2px 2px 5px -2px rgb(0 0 0 / 10%);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
